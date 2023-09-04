@@ -1,10 +1,10 @@
 ﻿namespace Clases;
 public class Persona
 {
-    int dni;
-    string nombre;
-    string appellido;
-    int edad;
+    public int dni;
+    public string nombre;
+    public string appellido;
+    public int edad;
     public Persona(int dni, string nombre, string apellido, int edad)
     {
         this.dni = dni;
