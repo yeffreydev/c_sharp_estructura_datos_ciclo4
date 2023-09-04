@@ -1,0 +1,13 @@
+/solution_folder$dotnet new console --name "ConsoleApp"
+/solution_folder$dotnet new classlib --name "Clases"
+/solution_folder$dotnet new sln
+/solution_folder$dotnet sln add .\ConsoleApp\ConsoleApp.csproj
+/solution_folder$dotnet sln add .\Clases\Clases.csproj
+/solution_folder$cd ConsoleApp
+/solution_folder/ConsoleApp$dotnet add reference ../Clases/Clases.csproj
+/solution_folder/ConsoleApp$dotnet run
+
+
+
+
+
