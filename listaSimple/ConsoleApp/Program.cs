@@ -14,16 +14,25 @@ namespace ConsoleApp
                 switch (op)
                 {
                     case 1:
-                        registrarPersona(lista);
+                        registrarPersona(lista, true);
                         break;
                     case 2:
-                        lista.mostrar();
+                        registrarPersona(lista);
                         break;
                     case 3:
-                        buscarPersonaPorDni(lista);
+                        lista.mostrar();
                         break;
                     case 4:
+                        buscarPersonaPorDni(lista);
+                        break;
+                    case 5:
+                        buscarPersonaPorIndice(lista);
+                        break;
+                    case 6:
                         eliminarPersonaPorDni(lista);
+                        break;
+                    case 7:
+                        eliminarPersonaPorIndice(lista);
                         break;
                     case 0:
                         break;
@@ -39,15 +48,18 @@ namespace ConsoleApp
         static int mostrarMenu()
         {
             Console.Clear();
-            Console.WriteLine("1. insertar");
-            Console.WriteLine("2. mostrar");
-            Console.WriteLine("3. buscar persona por dni");
-            Console.WriteLine("4. eliminar persona por dni");
+            Console.WriteLine("1. insertar Inicio ");
+            Console.WriteLine("2. insertar Final ");
+            Console.WriteLine("3. mostrar");
+            Console.WriteLine("4. buscar persona por dni");
+            Console.WriteLine("5. buscar persona por indice");
+            Console.WriteLine("6. eliminar persona por dni");
+            Console.WriteLine("7. eliminar persona por indice");
             Console.WriteLine("0. salir");
             Console.Write("ingresa opcion: ");
             return int.Parse(Console.ReadLine());
         }
-        static void registrarPersona(ListaSimple lista)
+        static void registrarPersona(ListaSimple lista, bool insertarInicio = false)//pociincio|final
         {
             Console.WriteLine("=====FORMULARIO====");
             Console.Write("DNI: ");
@@ -60,21 +72,41 @@ namespace ConsoleApp
             int edad = int.Parse(Console.ReadLine());
 
             Persona persona = new Persona(dni, nombre, apellido, edad);
-            lista.insertar(persona);
+            if (insertarInicio)
+            {
+                lista.insertarInicio(persona);
+                return;
+            }
+            lista.insertarFinal(persona);
+        }
+        static void buscarPersonaPorIndice(ListaSimple lista)
+        {
+            Console.WriteLine("=====BUSCAR PERSONA POR INDICE====");
+            Console.Write("Indice: ");
+            int i = int.Parse(Console.ReadLine());
+            lista.buscarPorIndice(i);
+
         }
         static void buscarPersonaPorDni(ListaSimple lista)
         {
             Console.WriteLine("=====BUSCAR PERSONA POR DNI====");
             Console.Write("DNI: ");
             int dni = int.Parse(Console.ReadLine());
-            lista.buscar(dni);
+            lista.buscarPorDni(dni);
         }
         static void eliminarPersonaPorDni(ListaSimple lista)
         {
             Console.WriteLine("=====ELIMINAR PERSONA POR DNI====");
             Console.Write("DNI: ");
             int dni = int.Parse(Console.ReadLine());
-            lista.eliminar(dni);
+            lista.eliminarPorDni(dni);
+        }
+        static void eliminarPersonaPorIndice(ListaSimple lista)
+        {
+            Console.WriteLine("=====ELIMINAR PERSONA POR INDICE====");
+            Console.Write("INDICE: ");
+            int i = int.Parse(Console.ReadLine());
+            lista.eliminarPersonaPorIndice(i);
         }
     }
 }
