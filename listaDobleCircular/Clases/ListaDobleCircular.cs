@@ -1,63 +1,17 @@
 ﻿namespace Clases;
 
-
-public class ListaDobleCircular
-
-//Nodo ./Nodo.cs
-/*
-namespace Clases;
-public class Nodo
+public class ListaDobleCircular<T>
 {
-    public Nodo ant = null;
-    public Persona dato;
-    public Nodo sig = null;
-}*/
-
-//Persona ./Persona.cs
-/*
-namespace Clases;
-public class Persona
-{
-    public int dni;
-    public string nombre;
-
-    //create constructor method for properties
-    public Persona(int dni, string nombre)
-    {
-        this.dni = dni;
-        this.nombre = nombre;
-    }
-
-    //override ToString method
-    public override string ToString()
-    {
-        return $"DNI: {dni} - Nombre: {nombre}";
-    }
-}*/
-
-//methods
-/*
-- [] insertarPrimero
-- [] insertarUltimo
-- [] mostarPrimeroAUltimo
-- [] mostrarUltimoAPrimero
-- [] buscarPorDNI
-- [] buscarPorIndice
-- [] eliminarPorDni
-- [] eliminarPorIndice
-*/
-
-{
-
-    //create properties
-    public Nodo primero = null;//descripcion: es el primer nodo de la lista
-    public Nodo ultimo = null;//descripcion: es el ultimo nodo de la lista
+    public Nodo<T>? primero = null; //descripcion: es el primer nodo de la lista
+    public Nodo<T>? ultimo = null; //descripcion: es el ultimo nodo de la lista
     public int cantidad = 0;
-    //create public method insertarPrimero en ListaDobleCircular
-    public void insertarPrimero(Persona dato)
+    public delegate bool EvaluadorDato(T? dato);
+    public delegate void CallBackMostar(T? dato);
+
+    //public method insertarPrimero en ListaDobleCircular
+    public void Insertar(T dato)
     {
-        Nodo nuevo = new Nodo();
-        nuevo.dato = dato;
+        Nodo<T> nuevo = new Nodo<T> { dato = dato };
         if (primero == null)
         {
             primero = nuevo;
@@ -77,9 +31,9 @@ public class Persona
     }
 
     //create public method insertarUltimo en ListaDobleCircular
-    public void insertarUltimo(Persona dato)
+    public void InsertarUltimo(T dato)
     {
-        Nodo nuevo = new Nodo();
+        Nodo<T> nuevo = new Nodo<T>();
         nuevo.dato = dato;
         if (primero == null)
         {
@@ -98,130 +52,154 @@ public class Persona
         }
         cantidad++;
     }
+
     //create public method mostrarPrimeroAUltimo en ListaDobleCircular
-    public void mostrarPrimeroAUltimo()
+    public void Mostrar(CallBackMostar cbm)
     {
         if (primero == null)
-        {
             Console.WriteLine("Lista vacia");
-        }
         else
         {
-            Nodo aux = primero;
+            Nodo<T>? aux = primero;
             do
             {
-                Console.WriteLine(aux.dato);
-                aux = aux.sig;
+                cbm(aux.dato);
+                aux = aux?.sig;
             } while (aux != primero);
         }
     }
+
     //create public method mostrarUltimoAPrimero en ListaDobleCircular
-    public void mostrarUltimoAPrimero()
+    public void MostrarReversa(CallBackMostar cbm)
     {
         if (primero == null)
-        {
             Console.WriteLine("Lista vacia");
-        }
         else
         {
-            Nodo aux = ultimo;
+            Nodo<T>? aux = ultimo;
             do
             {
-                Console.WriteLine(aux.dato);
+                cbm(aux.dato);
                 aux = aux.ant;
             } while (aux != ultimo);
         }
     }
+
     //create public method buscarPorDNI en ListaDobleCircular
-    public Nodo buscarPorDNI(int dni)
+    public Nodo<T>? Buscar(EvaluadorDato ed)
     {
-        Nodo aux = primero;
+        if (primero == null)
+            return null;
+        Nodo<T>? nodoEncontrado = null;
+        //logic for search
+        Nodo<T>? temp = primero;
         do
         {
-            if (aux.dato.dni == dni)
+            if (ed(temp.dato))
             {
-                return aux;
+                nodoEncontrado = temp;
+                break;
             }
-            aux = aux.sig;
-        } while (aux != primero);
-        return null;
+            temp = temp?.sig;
+        } while (temp != primero);
+
+        return nodoEncontrado;
     }
-    //create public method buscarPorIndice en ListaDobleCircular
-    public Nodo buscarPorIndice(int indice)
+
+    public Nodo<T>? Buscar(int indice)
     {
-        if (indice >= 0 && indice < cantidad)
+        if (indice > (cantidad - 1) || indice < 0)
+            return null;
+        if (primero == null)
+            return null;
+        Nodo<T>? nodoEncontrado = null;
+        //logic for search
+        int contador = 0;
+        Nodo<T>? temp = primero;
+        do
         {
-            Nodo aux = primero;
-            int i = 0;
-            do
+            if (contador == indice)
             {
-                if (i == indice)
-                {
-                    return aux;
-                }
-                aux = aux.sig;
-                i++;
-            } while (aux != primero);
-        }
-        return null;
+                return temp;
+            }
+            contador++;
+            temp = temp?.sig;
+        } while (temp != primero);
+
+        return nodoEncontrado;
     }
-    //create public method eliminarPorDni en ListaDobleCircular and return boolean 
-    public bool eliminarPorDni(int dni)
+
+    //create public method eliminarPorDni en ListaDobleCircular and return boolean
+
+
+    // //create public method eliminarPorIndice en ListaDobleCircular and return boolean
+    public bool Eliminar(EvaluadorDato ed)
     {
-        Nodo aux = buscarPorDNI(dni);
-        if (aux != null)
+        Nodo<T>? aux = Buscar(ed);
+        if (aux == null)
+            return false;
+
+        if (aux == primero)
         {
-            if (aux == primero)
+            if (primero.sig == primero)
+            {
+                ultimo = null;
+                primero = null;
+            }
+            else
             {
                 primero = aux.sig;
                 primero.ant = ultimo;
                 ultimo.sig = primero;
             }
-            else if (aux == ultimo)
+        }
+        else if (aux == ultimo)
+        {
+            ultimo = aux.ant;
+            ultimo.sig = primero;
+            primero.ant = ultimo;
+        }
+        else
+        {
+            aux.ant.sig = aux.sig;
+            aux.sig.ant = aux.ant;
+        }
+        cantidad--;
+        return true;
+    }
+
+    public bool Eliminar(int indice)
+    {
+        Nodo<T>? aux = Buscar(indice);
+        if (aux == null)
+            return false;
+
+        if (aux == primero)
+        {
+            if (primero.sig == primero)
             {
-                ultimo = aux.ant;
-                ultimo.sig = primero;
-                primero.ant = ultimo;
+                ultimo = null;
+                primero = null;
             }
             else
-            {
-                aux.ant.sig = aux.sig;
-                aux.sig.ant = aux.ant;
-            }
-            cantidad--;
-            return true;
-        }
-        return false;
-    }
-    //create public method eliminarPorIndice en ListaDobleCircular and return boolean
-    public bool eliminarPorIndice(int indice)
-    {
-        Nodo aux = buscarPorIndice(indice);
-        if (aux != null)
-        {
-            if (aux == primero)
             {
                 primero = aux.sig;
                 primero.ant = ultimo;
                 ultimo.sig = primero;
             }
-            else if (aux == ultimo)
-            {
-                ultimo = aux.ant;
-                ultimo.sig = primero;
-                primero.ant = ultimo;
-            }
-            else
-            {
-                aux.ant.sig = aux.sig;
-                aux.sig.ant = aux.ant;
-            }
-            cantidad--;
-            return true;
         }
-        return false;
+        else if (aux == ultimo)
+        {
+            ultimo = aux.ant;
+            ultimo.sig = primero;
+            primero.ant = ultimo;
+        }
+        else
+        {
+            aux.ant.sig = aux.sig;
+            aux.sig.ant = aux.ant;
+        }
+        cantidad--;
+        return true;
     }
-
-
-
 }

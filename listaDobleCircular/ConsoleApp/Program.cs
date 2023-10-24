@@ -6,8 +6,7 @@ namespace ConsoleApp
     {
         public static void Main(string[] args)
         {
-
-            ListaDobleCircular lista = new ListaDobleCircular();
+            ListaDobleCircular<Persona> lista = new ListaDobleCircular<Persona>();
             int op;
             do
             {
@@ -15,16 +14,16 @@ namespace ConsoleApp
                 switch (op)
                 {
                     case 1:
-                        registrarPersona(lista, true);
+                        RegistrarPersona(lista, true);
                         break;
                     case 2:
-                        registrarPersona(lista);
+                        RegistrarPersona(lista);
                         break;
                     case 3:
-                        lista.mostrarPrimeroAUltimo();
+                        lista.Mostrar(p => Console.WriteLine(p));
                         break;
                     case 4:
-                        lista.mostrarUltimoAPrimero();
+                        lista.MostrarReversa(p => Console.WriteLine(p));
                         break;
                     case 5:
                         buscarPersonaPorDni(lista);
@@ -47,8 +46,8 @@ namespace ConsoleApp
                 Console.Write("\nenter para continuar");
                 Console.ReadKey();
             } while (op != 0);
-
         }
+
         static int mostrarMenu()
         {
             Console.Clear();
@@ -64,7 +63,8 @@ namespace ConsoleApp
             Console.Write("ingresa opcion: ");
             return int.Parse(Console.ReadLine());
         }
-        static void registrarPersona(ListaDobleCircular lista, bool insertarInicio = false)//pociincio|final
+
+        static void RegistrarPersona(ListaDobleCircular<Persona> lista, bool insertarInicio = false) //pociincio|final
         {
             Console.WriteLine("=====FORMULARIO====");
             Console.Write("DNI: ");
@@ -74,17 +74,18 @@ namespace ConsoleApp
             Persona persona = new Persona(dni, nombre);
             if (insertarInicio)
             {
-                lista.insertarPrimero(persona);
+                lista.Insertar(persona);
                 return;
             }
-            lista.insertarUltimo(persona);
+            lista.InsertarUltimo(persona);
         }
-        static void buscarPersonaPorDni(ListaDobleCircular lista)
+
+        static void buscarPersonaPorDni(ListaDobleCircular<Persona> lista)
         {
             Console.WriteLine("=====BUSCAR PERSONA POR DNI====");
             Console.Write("DNI: ");
             int dni = int.Parse(Console.ReadLine());
-            Nodo nodo = lista.buscarPorDNI(dni);
+            Nodo<Persona> nodo = lista.Buscar((p) => p.dni == dni);
             if (nodo != null)
             {
                 Console.WriteLine("persona encontrada");
@@ -95,12 +96,12 @@ namespace ConsoleApp
         }
 
         //buscar persona por indice
-        static void buscarPersonaPorIndice(ListaDobleCircular lista)
+        static void buscarPersonaPorIndice(ListaDobleCircular<Persona> lista)
         {
             Console.WriteLine("=====BUSCAR PERSONA POR INDICE====");
             Console.Write("INDICE: ");
             int indice = int.Parse(Console.ReadLine());
-            Nodo nodo = lista.buscarPorIndice(indice);
+            Nodo<Persona> nodo = lista.Buscar(indice);
             if (nodo != null)
             {
                 Console.WriteLine("persona encontrada");
@@ -111,13 +112,12 @@ namespace ConsoleApp
         }
 
         //eliminar persona por dni
-        static void eliminarPersonaPorDni(ListaDobleCircular lista)
+        static void eliminarPersonaPorDni(ListaDobleCircular<Persona> lista)
         {
             Console.WriteLine("=====ELIMINAR PERSONA POR DNI====");
             Console.Write("DNI: ");
             int dni = int.Parse(Console.ReadLine());
-            lista.eliminarPorDni(dni);
-            Boolean isDeleted = lista.eliminarPorDni(dni);
+            Boolean isDeleted = lista.Eliminar((p) => p.dni == dni);
             if (isDeleted)
             {
                 Console.WriteLine("persona eliminada");
@@ -125,13 +125,14 @@ namespace ConsoleApp
             }
             Console.WriteLine("persona no encontrada");
         }
+
         //eliminar persona por indice
-        static void eliminarPersonaPorIndice(ListaDobleCircular lista)
+        static void eliminarPersonaPorIndice(ListaDobleCircular<Persona> lista)
         {
             Console.WriteLine("=====ELIMINAR PERSONA POR INDICE====");
             Console.Write("INDICE: ");
             int indice = int.Parse(Console.ReadLine());
-            Boolean isDeleted = lista.eliminarPorIndice(indice);
+            Boolean isDeleted = lista.Eliminar(indice);
             if (isDeleted)
             {
                 Console.WriteLine("persona eliminada");

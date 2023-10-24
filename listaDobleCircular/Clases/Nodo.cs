@@ -1,7 +1,8 @@
 namespace Clases;
-public class Nodo
+
+public class Nodo<T>
 {
-    public Nodo ant = null;
-    public Persona dato;
-    public Nodo sig = null;
+    public Nodo<T>? ant = null;
+    public T? dato;
+    public Nodo<T>? sig = null;
 }
